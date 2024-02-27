@@ -17,25 +17,24 @@ interface Todo {
 }
 
 export default function Main(props: ComponentProps) {
-  const [filter, setFilter] = useState<string>("All");
-
-  useEffect(() => {
-    localStorage.setItem("todolist", JSON.stringify(props.todoList));
-  }, [props.todoList]);
-
   useEffect(() => {
     try {
       const storedTodoList = localStorage.getItem("todolist");
       if (storedTodoList) {
         const parsedTodoList: Todo[] = JSON.parse(storedTodoList);
         props.setTodoList(parsedTodoList);
-        return;
       }
     } catch (error) {
       console.error("Error", error);
       props.setTodoList([]);
     }
-  }, [props.setTodoList]);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("todolist", JSON.stringify(props.todoList));
+  });
+
+  const [filter, setFilter] = useState<string>("All");
 
   const filteredTodos = props.todoList.filter((item) => {
     return filter === "All"
@@ -46,6 +45,10 @@ export default function Main(props: ComponentProps) {
       ? item.status
       : false;
   });
+
+  const filterHandler = (e: string) => {
+    setFilter(e);
+  };
 
   const checkBoxHandler = (id: string) => {
     const newArr = props.todoList.slice();
@@ -68,10 +71,6 @@ export default function Main(props: ComponentProps) {
   const clearHandler = () => {
     const updateTodoList = props.todoList.filter((item) => !item.status);
     props.setTodoList(updateTodoList);
-  };
-
-  const filterHandler = (e: string) => {
-    setFilter(e);
   };
 
   const dragPerson = useRef<number>(0);
@@ -125,9 +124,15 @@ export default function Main(props: ComponentProps) {
                     className="w-5 h-5 cursor-pointer z-10 opacity-0"
                   />
                   <li
-                    className={`${
-                      props.switchMode ? "text-[#494C6B]" : "text-[#C8CBE7]"
-                    } ${
+                    style={{
+                      color:
+                        item.status && props.switchMode
+                          ? "#c8cbe7"
+                          : !item.status && !props.switchMode
+                          ? "#C8CBE7"
+                          : "#494c6b",
+                    }}
+                    className={` ${
                       item.status ? ` line-through` : ` no-underline`
                     }   text-3 2xl:text-[20px]`}
                   >
@@ -185,11 +190,14 @@ export default function Main(props: ComponentProps) {
             Active
           </p>
           <p
+            style={
+              filter === "Completed"
+                ? { color: "#3A7CFD" }
+                : { color: "#9495A5" }
+            }
             onClick={() => filterHandler("Completed")}
             className={`${
               props.switchMode ? "text-[#9495A5]" : "text-[#5B5E7E]"
-            } ${
-              filter === "Completed" ? "text-[#3A7CFD]" : "text-[#9495A5]"
             } cursor-pointer`}
           >
             Completed

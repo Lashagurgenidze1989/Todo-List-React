@@ -65,8 +65,8 @@ export default function Header(props: confirmProps) {
           placeholder="Create a new todo…"
           className={`w-full pl-[50px] py-4 2xl:py-6  rounded-md  text-xs 2xl:text-[18px] ${
             props.switchMode
-              ? `text-[#9495A5] bg-white shadow-boxShadow`
-              : `text-[#767992] bg-[#25273D] shadow-DarkBoxShadow`
+              ? `text-[#494c6b] bg-white shadow-boxShadow`
+              : `text-[#c8cbe7] bg-[#25273D] shadow-DarkBoxShadow`
           }`}
           onChange={(e) => setNewTodo(e.target.value)}
           onKeyDown={(e) => addTodo(e)}
